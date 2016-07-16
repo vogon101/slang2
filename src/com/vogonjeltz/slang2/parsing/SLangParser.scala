@@ -36,9 +36,14 @@ class SLangParser extends JavaTokenParsers with PackratParsers{
 
   lazy val identifier:Parser[Identifier] = "([a-zA-Z]+[a-zA-Z0-9\\-_]*)(\\.[a-zA-Z]+[a-zA-Z0-9\\-_]*)*".r ^^ (i => new Identifier(i))
 
-  lazy val functionCall : PackratParser[FunctionCall] = element ~ elementList ^^ {
-    case x ~ y => new FunctionCall(x, y)
-  }
+  //FUNCTION CALLS
+    lazy val functionCall : PackratParser[FunctionCall] = element ~ elementList ^^ {
+      case x ~ y => new FunctionCall(x, y)
+    }
+
+    lazy val operatorFunctionCall : PackratParser[FunctionCall] = (element ~ name ~ element) ^^ {
+      case e ~ n ~ o => new FunctionCall(new CompositeIdentifier(e, n), List(o))
+    }
 
   lazy val nameList: Parser[List[String]] = "(" ~> repsep("([a-zA-Z]+[a-zA-Z0-9\\-_]*)".r, ",") <~ ")"
 

@@ -12,7 +12,7 @@ class SlangInstance(val slangType: SlangType) {
   val scope = new ScopeStack(_baseScope)
 
   //Load the members of this class as defined in the class
-  scope.load(slangType.members.map(X => X._1 -> X._2.getInstance))
+  scope.load(slangType.members.map(X => X._1 -> X._2.getInstance(Some(this))))
   scope.set("this", this)
 
   def findInScope (name : String) = scope.get(name)

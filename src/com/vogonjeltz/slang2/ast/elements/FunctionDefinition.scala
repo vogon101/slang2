@@ -1,6 +1,7 @@
 package com.vogonjeltz.slang2.ast.elements
 
 import com.vogonjeltz.slang2.ast.Element
+import com.vogonjeltz.slang2.runtime.typing.SlangInstance
 import com.vogonjeltz.slang2.runtime.typing.types.CustomInstances.SlangFunction
 
 /**
@@ -8,6 +9,13 @@ import com.vogonjeltz.slang2.runtime.typing.types.CustomInstances.SlangFunction
   */
 class FunctionDefinition(argumentNames: List[String], code: Element) extends Element{
 
-  def run() = Some(new SlangFunction(code, argumentNames))
+  /**
+    * Special case
+    * @param containerInstance
+    * @return
+    */
+  def run(containerInstance : Option[SlangInstance]) = Some(new SlangFunction(code, argumentNames, containerInstance))
+
+  def run() = run(None)
 
 }
