@@ -1,3 +1,7 @@
 name = "Freddie"
 other = " Poser"
-name.add(other)
+xyz = name.+(other)
+println(xyz)
+
+xyz = xyz + other
+println(xyz)

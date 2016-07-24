@@ -6,10 +6,9 @@ import com.vogonjeltz.slang2.runtime.typing.SlangInstance
 
 /**
   * Created by fredd on 15/07/2016.
+  * @deprecated
   */
-class SlangFunctionAdapter(val function : (Scope) => Option[SlangInstance]) extends SlangFunction(null, null){
-
-  def this(function : () => Option[SlangInstance]) = this( (s: Scope) => function() )
+class SlangFunctionAdapter(val function : (Scope) => Option[SlangInstance], val _cont: Option[SlangInstance]) extends SlangFunction(null, null, _cont){
 
   override def runApply(arguments: List[SlangInstance]): Option[SlangInstance] = {
 

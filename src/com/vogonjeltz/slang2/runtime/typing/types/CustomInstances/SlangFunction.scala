@@ -15,7 +15,6 @@ class SlangFunction(element: Element, argumentNames: List[String], container: Op
 
   if (container.isDefined) {
     scope.set("this", container.get)
-    println("Resetting this!")
   }
 
   def frame(arguments: List[SlangInstance])(code : () => Option[SlangInstance]) : Option[SlangInstance] = {

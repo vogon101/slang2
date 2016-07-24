@@ -10,7 +10,7 @@ class SlangInstanceDefinition(value: Element) {
 
   def getInstance(container: Option[SlangInstance] = None) = {
     val instance = value match {
-      case v: FunctionDefinition => v.run(container)
+      case v: ContainableDefinition => v.run(container)
       case v => v.run()
     }
     if (instance.isEmpty)
