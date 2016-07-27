@@ -1,7 +1,16 @@
-name = "Freddie"
-other = " Poser"
-xyz = name.+(other)
-println(xyz)
+name = "First";
+last = " Last";
 
-xyz = xyz + other
-println(xyz)
+name.at = (that) => {
+    println("This : " + this);
+    println("That : " + that);
+    that + this;
+};
+
+xyz = name.+(last);
+println(xyz);
+
+xyz = xyz + last;
+println(xyz);
+
+println(name at last);

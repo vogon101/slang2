@@ -9,11 +9,13 @@ import com.vogonjeltz.slang2.runtime.typing.SlangInstance
   */
 class Identifier(val value: String) extends Element {
 
+  //println(value)
+
   lazy val split = value.split('.').toList
 
   lazy val container = new Identifier(split.take(split.length - 1).mkString("."))
 
-  lazy val topName = split.last
+  val topName = split.last
 
   def containerInstance = find(1)
 

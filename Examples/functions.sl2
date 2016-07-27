@@ -1,0 +1,59 @@
+oneLiner = () => println("Hello");
+
+simpleFunciton = () => {
+
+    println("Goodbye");
+
+};
+
+oneLineReturn = () => "This " + "That";
+
+simpleReturn = () => {
+
+    println("Returning a value");
+    "This 2 " + "That";
+
+};
+
+returnStatementTest = () => {
+
+    println("This will return a value before that last line");
+    return "This 3" + " That";
+    println("Never run");
+
+};
+
+oneLinerWithArgs = (name) => println("My name is " + name);
+
+simpleFunctionWithArgs = (name) => {
+
+    println("Your name is " + name);
+
+};
+
+returnWithArgs = (name) => {
+
+    "Returned : " + name;
+
+};
+
+returnStatementWithArgs = (name) => {
+
+    println("RETURN STATEMENT NEXT");
+    return "Returned (state) : " + name;
+
+};
+
+oneLiner();
+simpleFunciton();
+println(oneLineReturn());
+println(simpleReturn());
+
+println("About to test the return statement");
+println(returnStatementTest());
+
+oneLinerWithArgs("vogon1");
+simpleFunctionWithArgs("vogon2");
+println(returnWithArgs("vogon3"));
+println(returnStatementWithArgs("vogon4"));
+

@@ -32,7 +32,12 @@ class Program (val lines: List[Line]) {
   }
 
   def run(): Unit ={
-    lines.foreach( _ run())
+    var i = 1
+    lines.foreach( x => {
+      //println(s"Running line $i")
+      i+=1
+      x run()
+    })
   }
 
 }

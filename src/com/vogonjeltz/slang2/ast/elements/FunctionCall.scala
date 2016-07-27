@@ -6,7 +6,7 @@ import com.vogonjeltz.slang2.runtime.typing.SlangInstance
 /**
   * Created by Freddie on 11/07/2016.
   */
-class FunctionCall(function: Element, arguments: List[Element]) extends Element {
+class FunctionCall(val function: Element, val arguments: List[Element]) extends Element {
 
   def run(): Option[SlangInstance] = {
     val func = function.run()

@@ -12,9 +12,12 @@ import scala.util.parsing.combinator.{JavaTokenParsers, PackratParsers}
   */
 class SLangParser extends JavaTokenParsers with PackratParsers{
 
+  //TODO: Support composite identifiers for cases like "string".operation()
+  //TODO: Allow no semicolons
+
   lazy val program:PackratParser[Program] = rep(line) ^^ (x => new Program(x))
 
-  lazy val line:PackratParser[Line] = (assignment | element | comment) <~ (";" | "[\n\r]*".r)
+  lazy val line:PackratParser[Line] = comment | (assignment | element  ) <~ "[;[;\n][;\n\r]]".r
 
   //ASSIGNMENT
     lazy val assignment:PackratParser[Assignment] = assignmentLHS ~ element ^^ {
@@ -23,27 +26,33 @@ class SLangParser extends JavaTokenParsers with PackratParsers{
 
     lazy val assignmentLHS = identifier <~ "="
 
-  lazy val comment = "//.*".r ^^ (i => new Comment())
+  lazy val comment: PackratParser[Comment] = "//.*".r ^^ (i => new Comment())
 
   lazy val element: PackratParser[Element] = {
     functionCall        |
     functionDefinition  |
     codeBlock           |
+    returnStatement     |
     value               |
     identifier
   }
 
-  lazy val name: Parser[String] = "([a-zA-Z_\\+\\-\\*^%#~\\?\\/]+[a-zA-Z0-9_\\+\\-\\*^%#~\\?\\/]*)".r
+  lazy val name: Parser[String] = "([a-zA-Z_\\+\\-\\*^%#~@\\?\\/]+[a-zA-Z0-9_\\+\\-\\*^%#~@\\?\\/]*)".r
 
-  lazy val identifier:Parser[Identifier] = "([a-zA-Z_\\+\\-\\*^%#~\\?\\/]+[a-zA-Z0-9_\\+\\-\\*^%#~\\?\\/]*)(\\.[a-zA-Z_\\+\\-\\*^%#~\\?\\/]+[a-zA-Z0-9_\\+\\-\\*^%#~\\?\\/]*)*".r ^^ (i => new Identifier(i))
-
-  //FUNCTION CALLS
-    lazy val functionCall : PackratParser[FunctionCall] = operatorFunctionCall | (element ~ elementList ^^ {
-      case x ~ y => new FunctionCall(x, y)
+  lazy val identifier:Parser[Identifier] = "([a-zA-Z_\\+\\-\\*^%#~@\\?\\/]+[a-zA-Z0-9_\\+\\-\\*^%#~@\\?\\/]*)(\\.[a-zA-Z_\\+\\-\\*^%#~@\\?\\/]+[a-zA-Z0-9_\\+\\-\\*^%#~@\\?\\/]*)*".r ^^
+    (i => {
+      //println(s"Parsed $i")
+      new Identifier(i)
     })
 
-    lazy val operatorFunctionCall : PackratParser[FunctionCall] = (element ~ name ~ element) ^^ {
-      case e ~ n ~ o => new FunctionCall(new CompositeIdentifier(e, n), List(o))
+
+  //FUNCTION CALLS
+    lazy val functionCall : PackratParser[FunctionCall] = (element ~ elementList ^^ {
+      case x ~ y => new FunctionCall(x, y)
+    }) | operatorFunctionCall
+
+  lazy val operatorFunctionCall : PackratParser[FunctionCall] = (element ~ name ~ element) ^^ {
+      case container ~ name ~ arg => new FunctionCall(new CompositeIdentifier(container, name), List(arg))
     }
 
   lazy val nameList: Parser[List[String]] = "(" ~> repsep("([a-zA-Z]+[a-zA-Z0-9\\-_]*)".r, ",") <~ ")"
@@ -63,5 +72,7 @@ class SLangParser extends JavaTokenParsers with PackratParsers{
     lazy val value: PackratParser[ValueElement] = string
 
     lazy val string: PackratParser[StringElement] = stringLiteral ^^ (X => new StringElement(X.toString.substring(1,X.length-1)))
+
+  lazy val returnStatement : PackratParser[ReturnStatement] = ("return\\s".r ~> element) ^^ (X => new ReturnStatement(X))
 
 }

@@ -6,14 +6,15 @@ import com.vogonjeltz.slang2.runtime.typing.SlangInstance
 /**
   * Created by fredd on 15/07/2016.
   */
-class CompositeIdentifier(val cont : Element, val name: String) extends Identifier(null) {
+class CompositeIdentifier(val cont : Element, val name: String) extends Identifier("") {
+
+  override def containerInstance = cont.run()
 
   override def find(offset: Int = 0) : Option[SlangInstance] = {
 
-    val contInstance = cont.run()
-    if (contInstance.isEmpty) throw new Exception(s"Cannot get $name on None from anon. element (AST $container)")
+    if (containerInstance.isEmpty) throw new Exception(s"Cannot get $name on None from anon. element (AST $container)")
 
-    contInstance.get.scope.get(name)
+    containerInstance.get.scope.get(name)
 
   }
 

@@ -1,8 +1,8 @@
 package com.vogonjeltz.slang2.ast
 
-import com.vogonjeltz.slang2.ast.elements.Identifier
+import com.vogonjeltz.slang2.ast.elements.{FunctionDefinition, Identifier}
 import com.vogonjeltz.slang2.runtime.Program
-import com.vogonjeltz.slang2.runtime.typing.SlangInstance
+import com.vogonjeltz.slang2.runtime.typing.{ContainableDefinition, SlangInstance}
 import com.vogonjeltz.slang2.runtime.typing.types.NoneType
 
 /**
@@ -11,7 +11,12 @@ import com.vogonjeltz.slang2.runtime.typing.types.NoneType
 class Assignment(val name: Identifier, val element: Element) extends Line{
 
   def run(): Option[SlangInstance] = {
-    val valueOption = element.run()
+
+    val valueOption = element match {
+        case element: ContainableDefinition => element.run(name.containerInstance)
+        case e => e.run()
+    }
+
     var value: SlangInstance = null
     if (valueOption.isEmpty) value = new SlangInstance(new NoneType())
     else value = valueOption.get

@@ -9,7 +9,7 @@ import com.vogonjeltz.slang2.runtime.typing.types.FunctionType
 /**
   * Created by fredd on 10/07/2016.
   */
-class SlangFunction(element: Element, argumentNames: List[String], container: Option[SlangInstance] = None) extends SlangInstance(new FunctionType()){
+class SlangFunction(val element: Element, val argumentNames: List[String], val container: Option[SlangInstance] = None) extends SlangInstance(new FunctionType()){
 
   override def runApply(arguments: List[SlangInstance]): Option[SlangInstance] = frame(arguments)(element.run)
 

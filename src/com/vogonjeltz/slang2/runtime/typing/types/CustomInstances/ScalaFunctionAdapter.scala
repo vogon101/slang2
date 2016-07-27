@@ -8,7 +8,7 @@ import com.vogonjeltz.slang2.runtime.typing.{ContainableDefinition, SlangInstanc
 /**
   * Created by fredd on 15/07/2016.
   */
-class ScalaFunctionAdapter(val f : (Scope) => Option[SlangInstance], val argumentNames: List[String], _cont : Option[SlangInstance] = None, val name: String = "Anon")
+class ScalaFunctionAdapter(val f : (Scope) => Option[SlangInstance], override val argumentNames: List[String], _cont : Option[SlangInstance] = None, val name: String = "Anon")
   extends SlangFunction(null, null, _cont) with ContainableDefinition {
 
   override def runApply(arguments: List[SlangInstance]): Option[SlangInstance] = {
