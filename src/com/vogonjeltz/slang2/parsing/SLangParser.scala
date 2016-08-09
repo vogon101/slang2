@@ -17,33 +17,43 @@ class SLangParser extends JavaTokenParsers with PackratParsers{
 
   lazy val program:PackratParser[Program] = rep(line) ^^ (x => new Program(x))
 
-  lazy val line:PackratParser[Line] = comment | (assignment | element  ) <~ "[;[;\n][;\n\r]]".r
+  lazy val line:PackratParser[Line] = comment | (assignment | element) <~ ";[\\s]*".r
 
   //ASSIGNMENT
-    lazy val assignment:PackratParser[Assignment] = assignmentLHS ~ element ^^ {
+    lazy val assignment:Parser[Assignment] = assignmentLHS ~ element ^^ {
       case x ~ y => new Assignment(x,y)
     }
 
-    lazy val assignmentLHS = identifier <~ "="
+    lazy val assignmentLHS: Parser[Identifier] = identifier <~ "="
 
   lazy val comment: PackratParser[Comment] = "//.*".r ^^ (i => new Comment())
 
   lazy val element: PackratParser[Element] = {
     functionCall        |
+    instantiation       |
     functionDefinition  |
     codeBlock           |
     returnStatement     |
     value               |
     identifier
+
+
   }
 
-  lazy val name: Parser[String] = "([a-zA-Z_\\+\\-\\*^%#~@\\?\\/]+[a-zA-Z0-9_\\+\\-\\*^%#~@\\?\\/]*)".r
+  lazy val name: PackratParser[String] = "([a-zA-Z_\\+\\-\\*^%#~@\\?\\/]+[a-zA-Z0-9_\\+\\-\\*^%#~@\\?\\/]*)".r ^^ (X => X)
 
-  lazy val identifier:Parser[Identifier] = "([a-zA-Z_\\+\\-\\*^%#~@\\?\\/]+[a-zA-Z0-9_\\+\\-\\*^%#~@\\?\\/]*)(\\.[a-zA-Z_\\+\\-\\*^%#~@\\?\\/]+[a-zA-Z0-9_\\+\\-\\*^%#~@\\?\\/]*)*".r ^^
-    (i => {
-      //println(s"Parsed $i")
-      new Identifier(i)
-    })
+  //IDENTIFIER
+    lazy val identifier:PackratParser[Identifier] = "([a-zA-Z_\\+\\-\\*^%#~@\\?\\/]+[a-zA-Z0-9_\\+\\-\\*^%#~@\\?\\/]*)(\\.[a-zA-Z_\\+\\-\\*^%#~@\\?\\/]+[a-zA-Z0-9_\\+\\-\\*^%#~@\\?\\/]*)*".r ^^
+      (i => {
+        //println(s"Parsed $i")
+        new Identifier(i)
+      }) | compositeIdentifier
+
+    lazy val compositeIdentifier: PackratParser[CompositeIdentifier] = (compositeIdentifierLHS ~ name) ^^ {
+      case element ~ name => new CompositeIdentifier(element, name)
+    }
+
+    lazy val compositeIdentifierLHS: PackratParser[Element] = element <~ "."
 
 
   //FUNCTION CALLS
@@ -51,16 +61,16 @@ class SLangParser extends JavaTokenParsers with PackratParsers{
       case x ~ y => new FunctionCall(x, y)
     }) | operatorFunctionCall
 
-  lazy val operatorFunctionCall : PackratParser[FunctionCall] = (element ~ name ~ element) ^^ {
-      case container ~ name ~ arg => new FunctionCall(new CompositeIdentifier(container, name), List(arg))
-    }
+    lazy val operatorFunctionCall : PackratParser[FunctionCall] = (element ~ name ~ element) ^^ {
+        case container ~ name ~ arg => new FunctionCall(new CompositeIdentifier(container, name), List(arg))
+      }
 
-  lazy val nameList: Parser[List[String]] = "(" ~> repsep("([a-zA-Z]+[a-zA-Z0-9\\-_]*)".r, ",") <~ ")"
+  lazy val nameList: PackratParser[List[String]] = "(" ~> repsep("([a-zA-Z]+[a-zA-Z0-9\\-_]*)".r, ",") <~ ")"
 
   lazy val elementList : PackratParser[List[Element]] = "(" ~> repsep(element, ",") <~ ")"
 
   //FUNCTION DEFINITION
-    lazy val functionDefinitionLHS = nameList <~ "=>"
+    lazy val functionDefinitionLHS: PackratParser[List[String]] = nameList <~ "=>"
 
     lazy val functionDefinition : PackratParser[FunctionDefinition] = functionDefinitionLHS ~ element ^^ {
       case x ~ y => new FunctionDefinition(x, y)
@@ -74,5 +84,9 @@ class SLangParser extends JavaTokenParsers with PackratParsers{
     lazy val string: PackratParser[StringElement] = stringLiteral ^^ (X => new StringElement(X.toString.substring(1,X.length-1)))
 
   lazy val returnStatement : PackratParser[ReturnStatement] = ("return\\s".r ~> element) ^^ (X => new ReturnStatement(X))
+
+  lazy val instantiation : PackratParser[Instantiation] = ("new" ~> name ~ elementList) ^^ {
+    case n ~ l => new Instantiation(n, l)
+  }
 
 }

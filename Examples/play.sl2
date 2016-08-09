@@ -1,1 +1,3 @@
-"name".at = "test"
+test = () => return "abc";
+
+println(test());

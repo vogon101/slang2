@@ -14,6 +14,8 @@ abstract class Library {
 
 class BasicFunctions extends Library{
 
+  val types = new Types()
+
   def globalMembers = Map(
     "print" -> new PrintFunction(""),
     "println" -> new PrintFunction(),

@@ -1,21 +1,21 @@
 //Define some functions
-testFunction = () => {println("Name")}
+testFunction = () => {println("Name");};
 
-testFunction2 = (value) => {println(value)}
+testFunction2 = (value) => {println(value);};
 
 testFunction3 = (greeting) => {
- function = (name) => {print(greeting, " ", name, "\n")}
- println(function)
- function.greeting = greeting
- println(function)
- function
-}
+ function = (name) => {print(greeting, " ", name, "\n");};
+ println(function);
+ function.greeting = greeting;
+ println(function);
+ function;
+};
 
-name = "Freddie"
-println(name)
+name = "Freddie";
+println(name);
 
-testFunction()
-testFunction2("abcd")
-testFunction3("greetings")("mortal")
+testFunction();
+testFunction2("abcd");
+testFunction3("greetings")("mortal");
 
-println(input("What is your name? "))
+println(input("What is your name? "));

@@ -10,7 +10,10 @@ import com.vogonjeltz.slang2.runtime.typing.{SlangInstance, SlangInstanceDefinit
   */
 class SlangStringType extends SlangValueType("String"){
 
-  override val members = Map[String, SlangInstanceDefinition](
+  assert(!SlangStringType.hasInstance, "Instance already created")
+  Program().globalScope.setType(name, this)
+
+  _members ++= Map[String, SlangInstanceDefinition](
     "+" -> new SlangInstanceDefinition(new ScalaFunctionAdapter((scope: Scope) => {
       val _me = scope.get("this")
       val _that = scope.get("other")
@@ -18,7 +21,7 @@ class SlangStringType extends SlangValueType("String"){
       if (_me.isDefined && _that.isDefined) {
         val me = _me.get
         val that = _that.get
-        if (me.slangType.name == this.name && that.slangType.name == this.name) {
+        if (me.slangType == this && that.slangType == this) {
           Some(new SlangStringInstance(me.asInstanceOf[SlangStringInstance].value + that.asInstanceOf[SlangStringInstance].value))
         }
         else {
@@ -30,11 +33,33 @@ class SlangStringType extends SlangValueType("String"){
       }
 
     }, List("other"), None, "String add function"))
-  ) ++ super.members
+  )
+
+  override def create(args: List[SlangInstance]) =
+    if (args.length != 1) throw new Exception("Wrong number of arguments for String constructor")
+    else if (args.head.slangType==this) args.head match {
+        case string: SlangStringInstance => new SlangStringInstance(string.value)
+        case _ => throw new Exception("String constructor requires String argument")
+      }
+    else throw new Exception("String constructor requires String argument")
 
 }
 
-class SlangStringInstance(override val value : String) extends SlangValueInstance(new SlangStringType()) {
+object SlangStringType {
+
+  private var _instance: SlangStringType = null
+
+  def apply() = {
+    if (_instance == null) _instance = new SlangStringType()
+    _instance
+  }
+
+
+  def hasInstance = _instance != null
+
+}
+
+class SlangStringInstance(override val value : String) extends SlangValueInstance(SlangStringType()) {
 
   override def toString = value
 

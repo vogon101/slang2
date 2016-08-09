@@ -12,6 +12,7 @@ The successor language to SLang, this time it supports proper runtime classes wi
     * Operator like invocation: myvar + otherVar
       * This is equivalent to myvar.+(otherVar)
 * Variables/Methods with names with special chars (+,-,/,\,*, etc...)
+* Instantiation with the `new` keyword
 
 
 ## Coming Soon
