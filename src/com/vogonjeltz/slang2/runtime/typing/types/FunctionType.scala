@@ -9,7 +9,6 @@ import com.vogonjeltz.slang2.runtime.typing.SlangType
 class FunctionType extends SlangType("Function"){
 
   assert(!FunctionType.hasInstance, s"$name type has already been instantiated")
-  Program().globalScope.setType(name, this)
 
 }
 

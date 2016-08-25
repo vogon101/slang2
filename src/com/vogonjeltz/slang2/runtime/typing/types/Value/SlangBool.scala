@@ -14,7 +14,6 @@ class SlangBoolInstance(val value: Boolean) extends SlangValueInstance(SlangBool
 class SlangBoolType extends SlangValueType("Boolean"){
 
   if (SlangBoolType.hasInstance) throw new Exception("Cannot create SlangBoolType")
-  Program().globalScope.setType(name, this)
 
   override def create(args: List[SlangInstance]) =
     if (args.length != 1) throw new Exception("Wrong number of arguments for String constructor")

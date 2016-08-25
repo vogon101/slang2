@@ -29,3 +29,8 @@ The successor language to SLang, this time it supports proper runtime classes wi
 
 ## Expected issues
 * Order of operations
+
+## TODO
+
+##MAYBE
+* Allow for classes to be redefined?

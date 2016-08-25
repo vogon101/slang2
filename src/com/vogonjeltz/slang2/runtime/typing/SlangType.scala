@@ -14,6 +14,7 @@ class SlangType (val name: String, protected var _members: Map[String, SlangInst
   //This allows subclasses to use this
   def members = _members
 
+  assert(!Program().globalScope.hasType(name), s"Type $name already defined")
   Program().globalScope.setType(name, this)
 
   def toStringProto(instance: SlangInstance) = {

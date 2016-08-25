@@ -11,7 +11,6 @@ import com.vogonjeltz.slang2.runtime.typing.{SlangInstance, SlangInstanceDefinit
 class SlangStringType extends SlangValueType("String"){
 
   assert(!SlangStringType.hasInstance, "Instance already created")
-  Program().globalScope.setType(name, this)
 
   _members ++= Map[String, SlangInstanceDefinition](
     "+" -> new SlangInstanceDefinition(new ScalaFunctionAdapter((scope: Scope) => {

@@ -19,5 +19,7 @@ class GlobalScope extends Scope{
     else None
   }
 
+  def hasType(name:String) = _types.contains(name)
+
 
 }
