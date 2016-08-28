@@ -7,9 +7,10 @@ import com.vogonjeltz.slang2.runtime.typing.SlangInstance
 /**
   * Created by fredd on 15/07/2016.
   * @deprecated
-  */
+
 class SlangFunctionAdapter(val function : (Scope) => Option[SlangInstance], val _cont: Option[SlangInstance]) extends SlangFunction(null, null, _cont){
 
+  //TODO: Arguments
   override def runApply(arguments: List[SlangInstance]): Option[SlangInstance] = {
 
     Program().currentScope.push(this.scope)
@@ -26,3 +27,4 @@ class SlangFunctionAdapter(val function : (Scope) => Option[SlangInstance], val 
 
 
 }
+*/

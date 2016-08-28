@@ -60,6 +60,4 @@ object SlangStringType {
 
 class SlangStringInstance(override val value : String) extends SlangValueInstance(SlangStringType()) {
 
-  override def toString = value
-
 }

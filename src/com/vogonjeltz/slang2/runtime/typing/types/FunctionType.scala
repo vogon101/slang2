@@ -16,9 +16,9 @@ object FunctionType {
 
   private var _instance: FunctionType = null
 
-  def apply() = {
+  def apply():SlangType = {
     if (_instance == null) _instance = new FunctionType()
-    _instance
+    Program().globalScope.getType("Function").get
   }
 
 

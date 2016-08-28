@@ -57,3 +57,7 @@ simpleFunctionWithArgs("vogon2");
 println(returnWithArgs("vogon3"));
 println(returnStatementWithArgs("vogon4"));
 
+println("Hello World");
+println("Other line");
+oneLiner();
+simpleFunciton();

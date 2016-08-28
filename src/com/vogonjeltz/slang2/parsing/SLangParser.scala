@@ -3,6 +3,7 @@ package com.vogonjeltz.slang2.parsing
 import com.vogonjeltz.slang2.ast._
 import com.vogonjeltz.slang2.ast.elements._
 import com.vogonjeltz.slang2.runtime.Program
+import jdk.nashorn.internal.runtime.arrays.IntElements
 
 import scala.util.parsing.combinator.{JavaTokenParsers, PackratParsers}
 
@@ -14,10 +15,11 @@ class SLangParser extends JavaTokenParsers with PackratParsers{
 
   //TODO: Support composite identifiers for cases like "string".operation()
   //TODO: Allow no semicolons
+  //TODO: Allow files to end with line(no semicolon/newline)
 
   lazy val program:PackratParser[Program] = rep(line) ^^ (x => new Program(x))
 
-  lazy val line:PackratParser[Line] = comment | (assignment | element) <~ ";[\\s]*".r
+  lazy val line:PackratParser[Line] = (comment | (assignment | element)) <~ ( ";")
 
   //ASSIGNMENT
     lazy val assignment:Parser[Assignment] = assignmentLHS ~ element ^^ {
@@ -79,9 +81,15 @@ class SLangParser extends JavaTokenParsers with PackratParsers{
   lazy val codeBlock : PackratParser[CodeBlock] = ("{" ~> rep(line) <~ "}") ^^ (X => new CodeBlock(X))
 
   //Value
-    lazy val value: PackratParser[ValueElement] = string
+    lazy val value: PackratParser[ValueElement] = string | number
 
     lazy val string: PackratParser[StringElement] = stringLiteral ^^ (X => new StringElement(X.toString.substring(1,X.length-1)))
+
+    lazy val number: PackratParser[NumberElement] = float | integer
+
+      lazy val integer: PackratParser[IntElement] = """[+-]?\d+""".r ^^ { i => new IntElement(i.toInt) }
+
+      lazy val float: PackratParser[FloatElement] = """[+-]?[0-9]+((\.[0-9]+([eE][+-]?[0-9]+)?[fF]?)|([fF])|([eE][+-]?[0-9]+))\b""".r ^^ {f => new FloatElement(f.toFloat) }
 
   lazy val returnStatement : PackratParser[ReturnStatement] = ("return\\s".r ~> element) ^^ (X => new ReturnStatement(X))
 

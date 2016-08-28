@@ -15,6 +15,9 @@ class SlangInstance(val slangType: SlangType) {
   scope.load(slangType.members.map(X => X._1 -> X._2.getInstance(Some(this))))
   scope.set("this", this)
 
+  //FIXME: StackOverflow when setting members to new SlangInstances
+  //    This happens because on creation that member will be created again
+
   def findInScope (name : String) = scope.get(name)
 
   def setInScope  (name: String, obj: SlangInstance) = scope.set(name, obj)
